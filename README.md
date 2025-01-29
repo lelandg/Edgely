@@ -1,6 +1,8 @@
 # Edgely
 An OpenCV GUI for quick and effective edge detection. With tweaks!
 
+![Screenshot of 0.1.1 with Midjourney image](https://github.com/lelandg/Edgely/blob/main/Edgey%200.1.1.png)
+
 This project uses OpenCV for quick and effective edge detection with tweaks. 
 
 To install, place the files wherever you'd like. (Via download, clone, etc.) Open a prompt in that folder and type:
