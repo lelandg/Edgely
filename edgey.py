@@ -18,14 +18,13 @@ Last Updated: {__last_updated__}
 Email: {__email__}
 
 Requirements:
-- Python 3.8 or newer
-- tkinter (standard library)
-- zipfile (standard library)
+- Python 3.10 or newer
+- PySide6, opencv-python and numpy
 
-Install Python modules using `pip install -r python_requirements`
+Install Python modules using `pip install -r requirements.txt`
 
 How to Run:
-Run this script using the command `python MainWindow_ImageProcessing.py`.
+Run this script using the command `python edgey.py`.
 
 License:
 {__license__}
@@ -41,12 +40,12 @@ import logging
 import os
 import sys
 
-from PyQt5.QtWidgets import (
+from PySide6.QtWidgets import (
     QApplication, QMainWindow, QFileDialog, QLabel, QVBoxLayout, QSlider,
     QPushButton, QWidget, QHBoxLayout, QSizePolicy
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap, QImage
 
 from edge_detection import detect_edges
 import cv2
@@ -98,7 +97,7 @@ class MainWindow_ImageProcessing(QMainWindow):
 
         # Drag-and-Drop Label
         self.drag_drop_label = QLabel("Drag and Drop Images Here")
-        self.drag_drop_label.setAlignment(Qt.AlignCenter)
+        self.drag_drop_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.drag_drop_label.setFixedHeight(200)
         self.drag_drop_label.setStyleSheet("border: 2px dashed gray; background: #eee;")
         self.drag_drop_label.dragEnterEvent = self.drag_enter_event
@@ -107,16 +106,16 @@ class MainWindow_ImageProcessing(QMainWindow):
 
         # Original Image Preview
         self.original_label = QLabel("Original Image")
-        self.original_label.setAlignment(Qt.AlignCenter)
+        self.original_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.original_label.setStyleSheet("background-color: lightgray;")
-        self.original_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.original_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         image_preview_layout.addWidget(self.original_label)
 
         # Processed Image Preview
         self.preview_label = QLabel("Processed Image")
-        self.preview_label.setAlignment(Qt.AlignCenter)
+        self.preview_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.preview_label.setStyleSheet("background-color: lightgray;")
-        self.preview_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.preview_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         image_preview_layout.addWidget(self.preview_label)
 
         # Add images to the layout
@@ -124,10 +123,10 @@ class MainWindow_ImageProcessing(QMainWindow):
 
         # Slider for Sensitivity
         slider_label = QLabel("Edge Detection Sensitivity")
-        slider_label.setAlignment(Qt.AlignCenter)
+        slider_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_slider_layout.addWidget(slider_label)
 
-        self.sensitivity_slider = QSlider(Qt.Horizontal)
+        self.sensitivity_slider = QSlider(Qt.Orientation.Horizontal)
         self.sensitivity_slider.setMinimum(10)
         self.sensitivity_slider.setMaximum(150)
         self.sensitivity_slider.setValue(50)
@@ -136,10 +135,10 @@ class MainWindow_ImageProcessing(QMainWindow):
 
         # Slider for Line Thickness
         line_thickness_label = QLabel("Line Thickness")
-        line_thickness_label.setAlignment(Qt.AlignCenter)
+        line_thickness_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_slider_layout.addWidget(line_thickness_label)
 
-        self.line_thickness_slider = QSlider(Qt.Horizontal)
+        self.line_thickness_slider = QSlider(Qt.Orientation.Horizontal)
         self.line_thickness_slider.setMinimum(1)
         self.line_thickness_slider.setMaximum(10)
         self.line_thickness_slider.setValue(3)
@@ -186,12 +185,12 @@ class MainWindow_ImageProcessing(QMainWindow):
             height, width = self.processed_image.shape
             bytes_per_line = width
             q_img = QImage(
-                self.processed_image.data, width, height, bytes_per_line, QImage.Format_Grayscale8
+                self.processed_image.data, width, height, bytes_per_line, QImage.Format.Format_Grayscale8
             )
             self.preview_label.setPixmap(
                 QPixmap.fromImage(q_img).scaled(
                     self.preview_label.width(), self.preview_label.height(),
-                    Qt.KeepAspectRatio
+                    Qt.AspectRatioMode.KeepAspectRatio
                 )
             )
 
@@ -203,7 +202,7 @@ class MainWindow_ImageProcessing(QMainWindow):
             event.ignore()
 
     def drop_event(self, event):
-        event.setDropAction(Qt.CopyAction)
+        event.setDropAction(Qt.DropAction.CopyAction)
         event.accept()
         for url in event.mimeData().urls():
             self.image_path = url.toLocalFile()
@@ -211,7 +210,6 @@ class MainWindow_ImageProcessing(QMainWindow):
 
     def load_image(self, path=None):
         if not path:
-            options = QFileDialog.Options()
             path, _ = QFileDialog.getOpenFileName(
                 self, "Load Image", "", "Images (*.png *.jpg *.jpeg *.bmp)"
             )
@@ -231,12 +229,12 @@ class MainWindow_ImageProcessing(QMainWindow):
     def display_original_image(self):
         if self.image is not None:
             height, width, channel = self.image.shape
-            q_img = QImage(self.image.data, width, height, width * 3, QImage.Format_RGB888).rgbSwapped()
+            q_img = QImage(self.image.data, width, height, width * 3, QImage.Format.Format_RGB888).rgbSwapped()
             self.original_pixmap = QPixmap.fromImage(q_img)
             self.original_label.setPixmap(
                 self.original_pixmap.scaled(
                     self.original_label.width(), self.original_label.height(),
-                    Qt.KeepAspectRatio
+                    Qt.AspectRatioMode.KeepAspectRatio
                 )
             )
 
@@ -251,9 +249,8 @@ class MainWindow_ImageProcessing(QMainWindow):
         if not self.processed_image.any():
             self.show_error("No processed image to save.")
             return
-        options = QFileDialog.Options()
         save_path, _ = QFileDialog.getSaveFileName(
-            self, "Save Processed Image", "", "Images (*.png *.jpg *.bmp)", options=options)
+            self, "Save Processed Image", "", "Images (*.png *.jpg *.bmp)")
         if save_path:
             cv2.imwrite(save_path, self.processed_image, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 
@@ -278,4 +275,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     main_window = MainWindow_ImageProcessing()
     main_window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

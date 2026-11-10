@@ -1,7 +1,7 @@
 This project uses OpenCV for quick and effective edge detection with tweaks. 
 
 To install, place the files wherever you'd like. (Via download, clone, etc.) Open a prompt in that folder and type:
-pip install python_requirements
+pip install -r requirements.txt
 
 That may take a few minutes, depending on your system. Once it's done, type:
 
