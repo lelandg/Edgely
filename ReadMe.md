@@ -3,7 +3,7 @@ This project uses OpenCV for quick and effective edge detection with tweaks.
 To install, place the files wherever you'd like. (Via download, clone, etc.) Open a prompt in that folder and type:
 pip install -r requirements.txt
 
-Requires Python 3.10 or newer. The pinned PySide6 release (6.12.0) provides wheels for Windows 10/11 (x64 and ARM64), macOS 14 or newer, Linux x86-64 with glibc 2.34 or newer (for example Ubuntu 22.04 and later), and Linux ARM64 with glibc 2.39 or newer.
+Requires Python 3.10 or newer. The pinned PySide6 release (6.11.3) provides wheels for Windows 10/11 (x64 and ARM64), macOS 13 or newer, Linux x86-64 with glibc 2.34 or newer (for example Ubuntu 22.04 and later), and Linux ARM64 with glibc 2.39 or newer.
 
 That may take a few minutes, depending on your system. Once it's done, type:
 
